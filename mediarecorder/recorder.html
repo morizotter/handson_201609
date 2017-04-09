@@ -38,10 +38,34 @@
   // ==== (1) カメラ映像の取得 ==== 
   // -- カメラ映像を取得 --
   function startVideo() {
+    navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false
+    })
+    .then(function (stream) {
+      localStream = stream;
+
+      // videoタグで表示
+      localVideo.srcObject = localStream;
+    })
+    .catch(function (error) {
+      console.error("mediaDevice.getUserMedia() error: ", error);
+    });
   }
   
   // -- カメラ映像を停止 --
   function stopVideo() {
+    if (localStream) {
+      // track毎に停止
+      for (const track of localStream.getTracks()) {
+        track.stop();
+      }
+      localStream = null;
+    }
+
+    // videoタグを停止
+    localVideo.pause();
+    localVideo.srcObject = null;
   }
   // ==== (1) カメラ映像の取得 ====
 
